@@ -533,9 +533,11 @@ export class SocketServer {
                     const totalQuestions = session.items.filter(i => i.itemType === 'question').length;
 
                     // Emit question:ready with upcoming question number
+                    const firstQuestion = firstItem as Question;
                     this.io.to(sessionId).emit('question:ready', {
                         questionNumber: 1,
-                        totalQuestions: totalQuestions
+                        totalQuestions: totalQuestions,
+                        doublePoints: firstQuestion.doublePoints || false
                     });
                     this.io.to(sessionId).emit('quiz:starting', 3);
 
@@ -1027,9 +1029,11 @@ export class SocketServer {
                 const totalQuestions = session.items.filter(i => i.itemType === 'question').length;
 
                 // Emit question:ready with upcoming question number
+                const nextQuestion = nextItem as Question;
                 this.io.to(sessionId).emit('question:ready', {
                     questionNumber: questionNumber,
-                    totalQuestions: totalQuestions
+                    totalQuestions: totalQuestions,
+                    doublePoints: nextQuestion.doublePoints || false
                 });
                 this.io.to(sessionId).emit('quiz:starting', 3);
 

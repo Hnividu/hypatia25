@@ -488,14 +488,24 @@ export async function getQuestionsByQuizId(quizId: string): Promise<QuestionData
 
         const filtered = rows
             .slice(1)
-            .filter((row) => {
+            .filter((row, index) => {
+                const rowId = row[0]?.toString().trim();
                 const rowQuizId = row[1]?.toString().trim().toLowerCase();
                 const targetQuizId = quizId.trim().toLowerCase();
                 const match = rowQuizId === targetQuizId;
-                if (!match && row[0]) {
-                    console.log(`[Sheets Debug] Row skipped. ID: ${row[0]}, QuizId: ${row[1]} (Expected: ${quizId})`);
+
+                if (match) {
+                    if (!rowId) {
+                        console.warn(`[Sheets Debug] Row matches QuizId but is missing ID at row ${index + 2}. Using fallback ID.`);
+                        row[0] = `auto-${index}`; // Fallback ID
+                        return true;
+                    }
+                    return true;
+                } else if (rowId) {
+                    // Only log skipped rows that actually have an ID to avoid logging blank rows
+                    console.log(`[Sheets Debug] Row skipped. ID: ${rowId}, QuizId: ${row[1]} (Expected: ${quizId})`);
                 }
-                return match && row[0];
+                return false;
             });
 
         console.log(`[Sheets Debug] Returning ${filtered.length} questions after filter`);
@@ -774,15 +784,28 @@ export async function getSectionCards(quizId: string): Promise<SectionCardData[]
 
         const response = await sheets.spreadsheets.values.get({
             spreadsheetId: SPREADSHEET_ID,
-            range: `${SHEETS.SECTION_CARDS}!A:F`,
+            range: `${SHEETS.SECTION_CARDS}!A:G`,
         });
 
         const rows = response.data.values;
+        console.log(`[Sheets Debug] Fetched ${rows?.length || 0} rows from SectionCards sheet`);
+
         if (!rows || rows.length <= 1) return [];
 
-        return rows
+        const filtered = rows
             .slice(1)
-            .filter((row) => row[1]?.toString().trim().toLowerCase() === quizId.trim().toLowerCase())
+            .filter((row, index) => {
+                const rowQuizId = row[1]?.toString().trim().toLowerCase();
+                const match = rowQuizId === quizId.trim().toLowerCase();
+                if (match && !row[0]) {
+                    row[0] = `section-auto-${index}`;
+                }
+                return match;
+            });
+
+        console.log(`[Sheets Debug] Returning ${filtered.length} section cards after filter`);
+
+        return filtered
             .map((row) => ({
                 id: row[0] || '',
                 quizId: row[1] || '',
@@ -1130,7 +1153,7 @@ export async function initializeSheets(): Promise<void> {
                     range: `${SHEETS.QUESTIONS}!A1:J1`,
                     valueInputOption: 'USER_ENTERED',
                     requestBody: {
-                        values: [['ID', 'QuizId', 'Type', 'Text', 'Order', 'TimeLimit', 'DoublePoints', 'Data', 'CreatedAt']],
+                        values: [['ID', 'QuizId', 'Type', 'Text', 'Order', 'TimeLimit', 'DoublePoints', 'Data', 'CreatedAt', 'ImageUrl']],
                     },
                 });
             }
@@ -1379,7 +1402,7 @@ export async function updateQuizOrder(items: { id: string; type: 'question' | 's
                 const row = sIdToRow.get(item.id);
                 if (row) {
                     dataToUpdate.push({
-                        range: `${SHEETS.SECTION_CARDS}!E${row}`,
+                        range: `${SHEETS.SECTION_CARDS}!F${row}`,
                         values: [[item.order]]
                     });
                 }

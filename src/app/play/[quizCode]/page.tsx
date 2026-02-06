@@ -70,6 +70,7 @@ export default function PlayPage({ params }: { params: Promise<{ quizCode: strin
         timeRemaining,
         readyCountdown,
         upcomingQuestionNumber,
+        upcomingDoublePoints,
         sectionNumber,
         totalSections,
         submitAnswer,
@@ -158,6 +159,7 @@ export default function PlayPage({ params }: { params: Promise<{ quizCode: strin
                 questionNumber={upcomingQuestionNumber}
                 totalQuestions={sessionState?.totalQuestions || 0}
                 countdown={readyCountdown}
+                doublePoints={upcomingDoublePoints}
             />
         );
     }

@@ -46,7 +46,7 @@ export interface ServerToClientEvents {
     'quiz:finished': (leaderboard: LeaderboardData) => void;
 
     // Question events
-    'question:ready': (data: { questionNumber: number; totalQuestions: number }) => void;
+    'question:ready': (data: { questionNumber: number; totalQuestions: number; doublePoints: boolean }) => void;
     'question:show': (data: {
         question: QuestionForParticipant;
         questionNumber: number;

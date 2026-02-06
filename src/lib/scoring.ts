@@ -14,19 +14,20 @@ import type {
 // TIME-WEIGHTED SCORING ALGORITHM
 // ═══════════════════════════════════════════════════════════════════════════════
 //
-// Score Formula: totalPoints = basePoints * (1 + speedBonus)
+// New Score Formula:
+// totalPoints = (1 - (timeTaken / (timeLimit * 2))) * BASE_POINTS
 // 
 // Where:
-// - basePoints = 1000 (correct answer), 0 (incorrect)
-// - speedBonus = (timeLimit - timeTaken) / timeLimit * 0.5
-//   Max speed bonus is 50% (answering instantly)
-//   No penalty for slow answers (minimum bonus is 0%)
+// - BASE_POINTS = 1000
+// - This results in a linear decay:
+//   - Instant answer (0s): 1000 points
+//   - Last second answer (timeLimit): 500 points
+//
 // - doublePoints applies 2x multiplier to final score
 //
 // ═══════════════════════════════════════════════════════════════════════════════
 
-const BASE_POINTS = 1000;
-const MAX_SPEED_BONUS = 0.5; // 50% bonus for instant answers
+const BASE_REFERENCE = 1000;
 
 /**
  * Calculate score for an answer
@@ -36,9 +37,19 @@ export function calculateScore(
     answer: Answer,
     timeLimitMs: number
 ): ScoreResult {
-    let isCorrect = checkAnswer(question, answer);
+    // 1. Calculate Accuracy (0 to 1)
+    let accuracy = 0;
 
-    if (!isCorrect) {
+    if (question.type === 'categorize' && answer.type === 'categorize') {
+        accuracy = getCategorizeScoreMultiplier(question, answer);
+    } else {
+        // Use strict check for others (MCQ, Numerical)
+        const isCorrect = checkAnswer(question, answer);
+        accuracy = isCorrect ? 1 : 0;
+    }
+
+    // 2. Return early if incorrect (0 accuracy)
+    if (accuracy === 0) {
         return {
             participantId: answer.participantId,
             questionId: answer.questionId,
@@ -50,51 +61,39 @@ export function calculateScore(
         };
     }
 
-    // Calculate speed bonus based on time taken
-    const timeRatio = Math.max(0, (timeLimitMs - answer.timeTaken) / timeLimitMs);
-    let speedBonus = Math.round(BASE_POINTS * timeRatio * MAX_SPEED_BONUS);
-    let basePoints = BASE_POINTS;
+    // 3. Apply Scoring Formula
+    // Formula: (1 - (Response time / (total time x 2))) x (base_points)
 
-    // Handle Partial Credit for Categorize Questions
-    if (question.type === 'categorize' && answer.type === 'categorize') {
-        const accuracy = getCategorizeScoreMultiplier(question, answer);
+    // Ensure we don't divide by zero
+    const denominator = timeLimitMs * 2;
+    const timeFactor = denominator > 0 ? (1 - (answer.timeTaken / denominator)) : 1;
 
-        // Adjust points by accuracy
-        basePoints = Math.round(basePoints * accuracy);
-        speedBonus = Math.round(speedBonus * accuracy);
+    // Calculate raw points based on formula and accuracy (partial credit)
+    let totalPoints = Math.round(BASE_REFERENCE * timeFactor * accuracy);
 
-        // If accuracy is 0, return early as incorrect
-        if (accuracy === 0) {
-            return {
-                participantId: answer.participantId,
-                questionId: answer.questionId,
-                correct: false,
-                basePoints: 0,
-                speedBonus: 0,
-                totalPoints: 0,
-                timeTaken: answer.timeTaken,
-            };
-        }
-        // Proceed with reduced points. 
-        // Note: isCorrect is usually boolean. We'll set it to true if > 0 points, 
-        // or we could enforce 100% for "correct".
-        // Let's explicitly check 100% for the "correct" flag but award points regardless.
-        isCorrect = accuracy === 1;
-    }
-
-    let totalPoints = basePoints + speedBonus;
-
-    // Apply double points if enabled
+    // 4. Double Points Multiplier
     if (question.doublePoints) {
         totalPoints *= 2;
     }
 
+    // 5. Decomposition for UI (Base + Bonus)
+    // We define "Base Points" as the minimum score for a correct answer (at timeLimit)
+    // At t = timeLimit, the factor is (1 - 0.5) = 0.5
+    // So Base = 500 * accuracy [ * 2 if double ]
+    let basePoints = Math.round(500 * accuracy);
+    if (question.doublePoints) {
+        basePoints *= 2;
+    }
+
+    // The rest is considered "Speed Bonus"
+    const speedBonus = Math.max(0, totalPoints - basePoints);
+
     return {
         participantId: answer.participantId,
         questionId: answer.questionId,
-        correct: isCorrect,
-        basePoints: question.doublePoints ? BASE_POINTS * 2 : BASE_POINTS,
-        speedBonus: question.doublePoints ? speedBonus * 2 : speedBonus,
+        correct: accuracy === 1, // Strict correctness flag
+        basePoints,
+        speedBonus,
         totalPoints,
         timeTaken: answer.timeTaken,
     };

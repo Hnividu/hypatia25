@@ -7,12 +7,14 @@ interface QuestionReadyViewProps {
     questionNumber: number;
     totalQuestions: number;
     countdown: number; // 3, 2, 1, 0
+    doublePoints?: boolean;
 }
 
 export default function QuestionReadyView({
     questionNumber,
     totalQuestions,
-    countdown
+    countdown,
+    doublePoints = false
 }: QuestionReadyViewProps) {
     return (
         <div className={styles.container}>
@@ -43,6 +45,19 @@ export default function QuestionReadyView({
                     <span className={styles.number}>{questionNumber}</span>
                     <span className={styles.total}>of {totalQuestions}</span>
                 </motion.div>
+
+                {/* Double Points Badge - Highlighted */}
+                {doublePoints && (
+                    <motion.div
+                        className={styles.doublePointsBadge}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.3, type: "spring" }}
+                    >
+                        <span className={styles.doublePointsIcon}>⚡</span>
+                        <span className={styles.doublePointsText}>2x POINTS</span>
+                    </motion.div>
+                )}
 
                 {/* Animated Countdown */}
                 <div className={styles.countdownWrapper}>
@@ -86,7 +101,7 @@ export default function QuestionReadyView({
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.3 }}
                 >
-                    Get focused and prepare to answer!
+                    {doublePoints ? "This question is worth double! 🔥" : "Get focused and prepare to answer!"}
                 </motion.p>
             </motion.div>
 

@@ -29,9 +29,13 @@ let globalSocket: TypedSocket | null = null;
  */
 function getSocket(): TypedSocket {
     if (!globalSocket) {
-        globalSocket = io({
+        // Use an external URL if provided in env, otherwise fallback to current origin
+        const socketUrl = process.env.NEXT_PUBLIC_SOCKET_URL || '';
+
+        globalSocket = io(socketUrl, {
             path: '/api/socketio',
             addTrailingSlash: false,
+            transports: ['websocket', 'polling'], // Faster connection and better compatibility
         });
     }
     return globalSocket;
@@ -61,6 +65,7 @@ export interface UseSocketReturn {
     // Ready countdown state (3-2-1 before question)
     readyCountdown: number;
     upcomingQuestionNumber: number;
+    upcomingDoublePoints: boolean;
     // Section state
     sectionNumber: number;
     totalSections: number;
@@ -111,6 +116,7 @@ export function useSocket(options: UseSocketOptions = {}): UseSocketReturn {
     // Ready countdown state (3-2-1 before question)
     const [readyCountdown, setReadyCountdown] = useState(0);
     const [upcomingQuestionNumber, setUpcomingQuestionNumber] = useState(0);
+    const [upcomingDoublePoints, setUpcomingDoublePoints] = useState(false);
     const readyTimerRef = useRef<NodeJS.Timeout | null>(null);
 
     // Section state
@@ -191,13 +197,14 @@ export function useSocket(options: UseSocketOptions = {}): UseSocketReturn {
         });
 
         // Question handlers
-        socket.on('question:ready', ({ questionNumber: qNum, totalQuestions: total }) => {
+        socket.on('question:ready', ({ questionNumber: qNum, totalQuestions: total, doublePoints }) => {
             // Clear any existing ready timer
             if (readyTimerRef.current) {
                 clearInterval(readyTimerRef.current);
             }
 
             setUpcomingQuestionNumber(qNum);
+            setUpcomingDoublePoints(doublePoints || false);
             setReadyCountdown(3);
 
             // Start local countdown 3-2-1
@@ -233,6 +240,7 @@ export function useSocket(options: UseSocketOptions = {}): UseSocketReturn {
             }
             setReadyCountdown(0);
             setUpcomingQuestionNumber(0);
+            setUpcomingDoublePoints(false);
 
             setCurrentQuestion(question);
             setQuestionNumber(qNum);
@@ -453,6 +461,7 @@ export function useSocket(options: UseSocketOptions = {}): UseSocketReturn {
         timeRemaining,
         readyCountdown,
         upcomingQuestionNumber,
+        upcomingDoublePoints,
         sectionNumber,
         totalSections,
         answerSubmitted,
