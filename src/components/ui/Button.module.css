@@ -1,0 +1,214 @@
+.button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    font-family: var(--font-family);
+    font-weight: var(--font-weight-semibold);
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    white-space: nowrap;
+    user-select: none;
+    position: relative;
+    overflow: hidden;
+}
+
+.button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   SIZES
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.sm {
+    height: 32px;
+    padding: 0 var(--space-3);
+    font-size: var(--font-size-sm);
+}
+
+.md {
+    height: 40px;
+    padding: 0 var(--space-4);
+    font-size: var(--font-size-base);
+}
+
+.lg {
+    height: 48px;
+    padding: 0 var(--space-5);
+    font-size: var(--font-size-lg);
+}
+
+.xl {
+    height: 56px;
+    padding: 0 var(--space-6);
+    font-size: var(--font-size-xl);
+    border-radius: var(--radius-lg);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   VARIANTS
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.primary {
+    background: var(--gradient-gold);
+    color: var(--color-text-inverse);
+    box-shadow: var(--shadow-sm), 0 0 20px rgba(234, 179, 8, 0.2);
+}
+
+.primary:hover:not(:disabled) {
+    box-shadow: var(--shadow-md), 0 0 30px rgba(234, 179, 8, 0.4);
+    transform: translateY(-1px);
+}
+
+.primary:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.secondary {
+    background-color: transparent;
+    color: var(--color-text-primary);
+    border: 1px solid var(--color-border);
+}
+
+.secondary:hover:not(:disabled) {
+    background-color: var(--color-primary-light);
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
+.danger {
+    background-color: var(--color-danger);
+    color: white;
+}
+
+.danger:hover:not(:disabled) {
+    background-color: #DC2626;
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
+}
+
+.ghost {
+    background-color: transparent;
+    color: var(--color-text-secondary);
+}
+
+.ghost:hover:not(:disabled) {
+    background-color: var(--color-primary-light);
+    color: var(--color-primary);
+}
+
+/* Gold outline variant */
+.outline {
+    background-color: transparent;
+    color: var(--color-primary);
+    border: 1px solid var(--color-primary);
+}
+
+.outline:hover:not(:disabled) {
+    background-color: var(--color-primary-light);
+    box-shadow: 0 0 20px rgba(234, 179, 8, 0.2);
+}
+
+/* Quiz Answer Option Variants (Kahoot-style colors) */
+
+.option-a {
+    background-color: var(--color-option-a);
+    color: white;
+}
+
+.option-a:hover:not(:disabled) {
+    background-color: #DC2626;
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.4);
+    transform: translateY(-2px);
+}
+
+.option-b {
+    background-color: var(--color-option-b);
+    color: white;
+}
+
+.option-b:hover:not(:disabled) {
+    background-color: #2563EB;
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+    transform: translateY(-2px);
+}
+
+.option-c {
+    background-color: var(--color-option-c);
+    color: var(--color-text-inverse);
+}
+
+.option-c:hover:not(:disabled) {
+    background-color: #CA8A04;
+    box-shadow: 0 0 20px rgba(234, 179, 8, 0.4);
+    transform: translateY(-2px);
+}
+
+.option-d {
+    background-color: var(--color-option-d);
+    color: white;
+}
+
+.option-d:hover:not(:disabled) {
+    background-color: #16A34A;
+    box-shadow: 0 0 20px rgba(34, 197, 94, 0.4);
+    transform: translateY(-2px);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   MODIFIERS
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.fullWidth {
+    width: 100%;
+}
+
+.icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+}
+
+.icon svg {
+    width: 100%;
+    height: 100%;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   LOADING STATE
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.spinner {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    animation: spin 1s linear infinite;
+}
+
+.spinner svg {
+    width: 100%;
+    height: 100%;
+}
+
+.hiddenText {
+    visibility: hidden;
+    width: 0;
+    overflow: hidden;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}

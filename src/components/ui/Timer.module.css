@@ -1,0 +1,168 @@
+.timer {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   SIZES
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.sm {
+    width: 80px;
+    height: 80px;
+}
+
+.md {
+    width: 120px;
+    height: 120px;
+}
+
+.lg {
+    width: 160px;
+    height: 160px;
+}
+
+.xl {
+    width: 200px;
+    height: 200px;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   CIRCLE
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.circle {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.bgCircle {
+    stroke: var(--color-border-subtle);
+}
+
+.progressCircle {
+    stroke: var(--color-primary);
+    transition: stroke var(--transition-fast);
+    filter: drop-shadow(0 0 8px rgba(234, 179, 8, 0.4));
+}
+
+/* Status colors */
+.warning .progressCircle {
+    stroke: var(--color-warning);
+    filter: drop-shadow(0 0 8px rgba(245, 158, 11, 0.4));
+}
+
+.urgent .progressCircle {
+    stroke: var(--color-danger);
+    filter: drop-shadow(0 0 8px rgba(239, 68, 68, 0.4));
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   TIME DISPLAY
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.timeDisplay {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 1;
+}
+
+.time {
+    font-weight: var(--font-weight-bold);
+    color: var(--color-primary);
+    line-height: 1;
+    text-shadow: 0 0 20px rgba(234, 179, 8, 0.5);
+}
+
+.sm .time {
+    font-size: var(--font-size-xl);
+}
+
+.md .time {
+    font-size: var(--font-size-3xl);
+}
+
+.lg .time {
+    font-size: var(--font-size-4xl);
+}
+
+.xl .time {
+    font-size: var(--font-size-5xl);
+}
+
+.label {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: var(--space-1);
+}
+
+/* Status colors for time */
+.warning .time {
+    color: var(--color-warning);
+    text-shadow: 0 0 20px rgba(245, 158, 11, 0.5);
+}
+
+.urgent .time {
+    color: var(--color-danger);
+    text-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   PULSE EFFECT
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.pulse {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 3px solid var(--color-danger);
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.4);
+    pointer-events: none;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   INLINE TIMER
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.inlineTimer {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.inline-sm {
+    width: 120px;
+}
+
+.inline-md {
+    width: 180px;
+}
+
+.progressBar {
+    flex: 1;
+    height: 6px;
+    background-color: var(--color-border-subtle);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+}
+
+.progressFill {
+    height: 100%;
+    border-radius: var(--radius-full);
+    background: var(--gradient-gold);
+    box-shadow: 0 0 10px rgba(234, 179, 8, 0.5);
+}
+
+.inlineTime {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    min-width: 32px;
+    text-align: right;
+    color: var(--color-primary);
+}

@@ -1,0 +1,190 @@
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    width: 100%;
+    color: #fff;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    background: radial-gradient(ellipse at center, rgba(59, 130, 246, 0.15) 0%, transparent 70%);
+}
+
+.content {
+    background: rgba(30, 30, 35, 0.7);
+    backdrop-filter: blur(16px);
+    padding: 3rem 4rem;
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.3),
+        0 0 60px rgba(59, 130, 246, 0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    max-width: 500px;
+    width: 90%;
+    z-index: 1;
+}
+
+.heading {
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin: 0;
+    color: rgba(255, 255, 255, 0.9);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.questionBadge {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 1rem 2rem;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.3) 0%, rgba(147, 51, 234, 0.3) 100%);
+    border-radius: 16px;
+    border: 1px solid rgba(59, 130, 246, 0.4);
+}
+
+.label {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.7);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.number {
+    font-size: 4rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+}
+
+.total {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.countdownWrapper {
+    position: relative;
+    width: 140px;
+    height: 140px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 1rem 0;
+}
+
+.countdownRing {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.ringProgress {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+}
+
+.ringBg {
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.1);
+    stroke-width: 6;
+}
+
+.ringFill {
+    fill: none;
+    stroke: url(#gradient);
+    stroke: #fbbf24;
+    stroke-width: 6;
+    stroke-linecap: round;
+    stroke-dasharray: 283;
+    stroke-dashoffset: 0;
+}
+
+.countdownNumber {
+    font-size: 4rem;
+    font-weight: 800;
+    color: #fbbf24;
+    z-index: 1;
+    text-shadow: 0 0 30px rgba(251, 191, 36, 0.5);
+}
+
+.subtext {
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin: 0;
+    font-weight: 400;
+}
+
+.particles {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.particle {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    border-radius: 50%;
+    bottom: 20%;
+    left: 50%;
+}
+
+.particle:nth-child(1) {
+    left: 20%;
+}
+
+.particle:nth-child(2) {
+    left: 35%;
+}
+
+.particle:nth-child(3) {
+    left: 50%;
+}
+
+.particle:nth-child(4) {
+    left: 65%;
+}
+
+.particle:nth-child(5) {
+    left: 80%;
+}
+
+.particle:nth-child(6) {
+    left: 90%;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .content {
+        padding: 2rem;
+    }
+
+    .heading {
+        font-size: 1.4rem;
+    }
+
+    .number {
+        font-size: 3rem;
+    }
+
+    .countdownWrapper {
+        width: 100px;
+        height: 100px;
+    }
+
+    .countdownNumber {
+        font-size: 3rem;
+    }
+}

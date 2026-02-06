@@ -1,0 +1,348 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 1rem;
+    gap: 1.5rem;
+    min-height: 80vh;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 1rem;
+}
+
+.progress {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    flex: 1;
+    margin-right: 2rem;
+}
+
+.questionNumber {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-primary, #fff);
+}
+
+.total {
+    color: var(--text-secondary, #888);
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.progressBar {
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.progressFill {
+    height: 100%;
+    background: linear-gradient(90deg, #fbbf24, #f59e0b);
+    border-radius: 3px;
+    transition: width 0.3s ease;
+}
+
+.timer {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.timer.urgent {
+    border-color: #ef4444;
+    background: rgba(239, 68, 68, 0.1);
+}
+
+.timeValue {
+    font-size: 1.25rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--text-primary, #fff);
+}
+
+.questionCard {
+    background: rgba(30, 30, 35, 0.95);
+    /* Reduced transparency for performance */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    /* lighter shadow */
+}
+
+.questionText {
+    font-size: 1.5rem;
+    line-height: 1.4;
+    color: #fff;
+    margin: 0;
+    font-weight: 600;
+}
+
+@media (max-width: 640px) {
+    .questionText {
+        font-size: 1.25rem;
+    }
+
+    .questionCard {
+        padding: 1.5rem;
+    }
+}
+
+/* MCQ Styles */
+.optionsGrid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+}
+
+@media (min-width: 640px) {
+    .optionsGrid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.optionButton {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid transparent;
+    border-radius: 12px;
+    padding: 1.25rem;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+}
+
+.optionButton:hover:not(.disabled) {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-2px);
+}
+
+.optionButton:active:not(.disabled) {
+    transform: scale(0.98);
+}
+
+.optionButton.selected {
+    background: rgba(251, 191, 36, 0.1);
+    border-color: #fbbf24;
+}
+
+.optionButton.disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.optionLabel {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    font-weight: 700;
+    color: #fbbf24;
+    flex-shrink: 0;
+}
+
+.optionButton.selected .optionLabel {
+    background: #fbbf24;
+    color: #000;
+}
+
+.optionText {
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+.checkMark {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    color: #fbbf24;
+    font-weight: bold;
+}
+
+/* Numerical Styles */
+.numericalContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem 0;
+}
+
+.numericalInput {
+    background: rgba(0, 0, 0, 0.3);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    padding: 1rem;
+    font-size: 2rem;
+    color: #fff;
+    text-align: center;
+    width: 100%;
+    max-width: 300px;
+    outline: none;
+    transition: all 0.2s;
+}
+
+.numericalInput:focus {
+    border-color: #fbbf24;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+/* Categorize Styles */
+.categorizeContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.categoriesRow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.categoryBucket {
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px dashed rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    padding: 1rem;
+    min-width: 140px;
+    /* Sligthly smaller min-width for mobile */
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    transition: all 0.2s;
+}
+
+.categoryBucket.droppableActive {
+    border-color: #fbbf24;
+    background: rgba(251, 191, 36, 0.1);
+}
+
+.categoryTitle {
+    color: #fbbf24;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.itemsPool {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    justify-content: center;
+    min-height: 80px;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 1rem;
+    border-radius: 12px;
+    border: 1px solid transparent;
+}
+
+.itemsPool.droppableActive {
+    border-color: rgba(251, 191, 36, 0.5);
+    background: rgba(251, 191, 36, 0.05);
+}
+
+.draggableItem {
+    background: #2d2d35;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 0.75rem 0.75rem;
+    /* Reduced padding */
+    border-radius: 8px;
+    color: #fff;
+    cursor: grab;
+    user-select: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+
+    /* Critical for mobile drag-and-drop */
+    touch-action: none;
+}
+
+.draggableItem:active {
+    cursor: grabbing;
+}
+
+@media (max-width: 640px) {
+    .categorizeContainer {
+        gap: 1.5rem;
+    }
+
+    .categoriesRow {
+        flex-direction: column;
+        /* Stack buckets on mobile */
+        align-items: stretch;
+    }
+
+    .categoryBucket {
+        min-height: 100px;
+    }
+
+    .draggableItem {
+        width: 100%;
+        /* Full width items on mobile pool for easier tapping */
+        text-align: center;
+    }
+
+    .itemsPool .draggableItem {
+        width: auto;
+        /* Allow wrap in pool */
+    }
+}
+
+/* Footer & Common */
+.footer {
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.statusMessage {
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.waitingText {
+    color: #fbbf24;
+    font-weight: 500;
+}
+
+.timeUpText {
+    color: #ef4444;
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+.submitButton {
+    width: 100%;
+    max-width: 300px;
+    height: 50px;
+    font-size: 1.1rem;
+}
