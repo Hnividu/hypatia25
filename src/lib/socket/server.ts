@@ -615,11 +615,78 @@ export class SocketServer {
                 this.broadcastSessionState(sessionId);
             });
 
-            socket.on('admin:reset-quiz', (rawSessionId) => {
+            socket.on('admin:reset-quiz', async (rawSessionId) => {
                 if (!socket.data.isAdmin) return;
                 const sessionId = rawSessionId?.trim().toLowerCase();
                 const session = this.sessions.get(sessionId);
                 if (!session) return;
+
+                // Reload questions and sections from Google Sheets
+                try {
+                    console.log(`[Reset] Reloading questions for session ${sessionId}...`);
+                    const [params, sectionData] = await Promise.all([
+                        sheets.getQuestionsByQuizId(session.quizId),
+                        sheets.getSectionCards(session.quizId)
+                    ]);
+
+                    const questions: Question[] = params.map(q => ({
+                        id: q.id,
+                        type: q.type as QuestionType,
+                        text: q.text,
+                        timeLimit: q.timeLimit,
+                        doublePoints: q.doublePoints,
+                        order: q.order,
+                        ...(() => {
+                            try {
+                                const parsed = JSON.parse(q.data);
+                                if (q.type === 'mcq' && Array.isArray(parsed.options)) {
+                                    const correctId = parsed.correctOptionId ? String(parsed.correctOptionId) : null;
+                                    parsed.options = parsed.options.map((o: any) => {
+                                        const optionId = String(o.id);
+                                        const isCorrect = correctId
+                                            ? optionId === correctId
+                                            : String(o.isCorrect).toLowerCase() === 'true';
+                                        return { ...o, id: optionId, isCorrect };
+                                    });
+                                }
+                                if (q.type === 'categorize') {
+                                    if (Array.isArray(parsed.items)) {
+                                        parsed.items = parsed.items.map((i: any) => ({
+                                            ...i,
+                                            id: String(i.id),
+                                            categoryId: i.categoryId ? String(i.categoryId).trim() : ''
+                                        }));
+                                    }
+                                    if (Array.isArray(parsed.categories)) {
+                                        parsed.categories = parsed.categories.map((c: any) => ({
+                                            ...c,
+                                            id: String(c.id)
+                                        }));
+                                    }
+                                }
+                                return parsed;
+                            } catch (e) {
+                                return {};
+                            }
+                        })()
+                    }));
+
+                    const sections: SectionCard[] = sectionData.map(s => ({
+                        ...s,
+                        createdAt: s.createdAt || new Date().toISOString()
+                    }));
+
+                    const items: QuizItem[] = [
+                        ...questions.map(q => ({ ...q, itemType: 'question' as const })),
+                        ...sections.map(s => ({ ...s, itemType: 'section' as const }))
+                    ].sort((a, b) => a.order - b.order);
+
+                    session.items = items;
+                    session.quiz.questions = questions;
+                    console.log(`[Reset] Loaded ${items.length} items (${questions.length} questions, ${sections.length} sections)`);
+                } catch (e) {
+                    console.error('[Reset] Failed to reload questions:', e);
+                }
 
                 session.status = 'lobby';
                 session.currentQuestionIndex = 0;
