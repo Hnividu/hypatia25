@@ -55,27 +55,32 @@ export default function Lobby({
 
                 <div className={styles.participantGrid}>
                     <AnimatePresence>
-                        {participants.map((participant, index) => (
-                            <motion.div
-                                key={participant.regId}
-                                className={`${styles.participantCard} ${currentUserId === participant.regId ? styles.currentUser : ''
-                                    }`}
-                                initial={{ opacity: 0, scale: 0.8, y: 20 }}
-                                animate={{ opacity: 1, scale: 1, y: 0 }}
-                                exit={{ opacity: 0, scale: 0.8 }}
-                                transition={{
-                                    type: 'spring',
-                                    stiffness: 300,
-                                    damping: 25,
-                                    delay: index * 0.05,
-                                }}
-                            >
-                                <div className={styles.avatar}>
-                                    {participant.name.charAt(0).toUpperCase()}
-                                </div>
-                                <span className={styles.name}>{participant.name}</span>
-                            </motion.div>
-                        ))}
+                        {participants.map((participant, index) => {
+                            const isMe = currentUserId?.toLowerCase() === participant.regId.toLowerCase();
+                            return (
+                                <motion.div
+                                    key={participant.regId}
+                                    className={`${styles.participantCard} ${isMe ? styles.currentUser : ''}`}
+                                    initial={{ opacity: 0, scale: 0.8, y: 20 }}
+                                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                                    exit={{ opacity: 0, scale: 0.8 }}
+                                    transition={{
+                                        type: 'spring',
+                                        stiffness: 300,
+                                        damping: 25,
+                                        delay: index * 0.05,
+                                    }}
+                                >
+                                    <div className={styles.avatar}>
+                                        {participant.name.charAt(0).toUpperCase()}
+                                    </div>
+                                    <span className={styles.name}>
+                                        {participant.name}
+                                        {isMe && <span className={styles.youBadge}> (You)</span>}
+                                    </span>
+                                </motion.div>
+                            );
+                        })}
                     </AnimatePresence>
                 </div>
 

@@ -131,6 +131,13 @@
     font-weight: bold;
 }
 
+.youBadge {
+    font-size: 0.75rem;
+    opacity: 0.9;
+    font-weight: var(--font-weight-medium);
+    margin-left: 4px;
+}
+
 .avatar {
     width: 36px;
     height: 36px;
