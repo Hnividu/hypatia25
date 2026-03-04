@@ -58,6 +58,12 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
                             setFocused(false);
                             props.onBlur?.(e);
                         }}
+                        onWheel={(e) => {
+                            if (props.type === 'number') {
+                                (e.target as HTMLElement).blur();
+                            }
+                            props.onWheel?.(e);
+                        }}
                         {...props}
                     />
                     {rightIcon && <span className={styles.icon}>{rightIcon}</span>}

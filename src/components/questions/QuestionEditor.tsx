@@ -342,6 +342,7 @@ export default function QuestionEditor({
                                 type="number"
                                 value={timeLimit}
                                 onChange={(e) => setTimeLimit(Number(e.target.value))}
+                                onWheel={(e) => (e.target as HTMLElement).blur()}
                                 min={5}
                                 max={300}
                             />

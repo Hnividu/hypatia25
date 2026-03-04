@@ -224,6 +224,7 @@ export default function QuestionView({
                             const val = e.target.value;
                             setAnswer(val === '' ? '' : parseFloat(val));
                         }}
+                        onWheel={(e) => (e.target as HTMLElement).blur()}
                         disabled={submitted}
                     />
                 </div>
